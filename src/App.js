@@ -9,8 +9,10 @@ const  App = () => {
  const  localStorageData = JSON.parse(localStorage.getItem('contacts'))
   if(localStorageData){
   return localStorageData
-  }})
-
+  }else{
+    return [];
+  }
+})
   const [name,setName] = useState('')
   const [number,setNumber] = useState('')
   const [filter,setFilter] = useState('')
@@ -43,27 +45,42 @@ const  App = () => {
 // }
 
   const filterItems = (query) => {
-    return contacts.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()) && item);
+    console.log(contacts);
+    return contacts.filter(item =>  item.name.toLowerCase().includes(query.toLowerCase()) && item);
+    
   };
   const removeName = (name) =>
-   setName((prev) => ({
-      contacts: prev.filter((el) => el.name !== name),
-    }));
+   setContacts(contacts.filter(el => el.name.toLowerCase() !== name.toLowerCase() )
+   );
 
   const  onInputValue = (e) => {
     const { name, value } = e.target;
-    this.setState({ [name]: value });
+    // this.setState({ [name]: value });
+    switch (name){
+      case 'name' :
+      setName(value)
+      break;
+      case 'number' :
+        setNumber(value)
+        break;
+        case 'filter' :
+          setFilter(value)
+        break;
+        default :
+        return;
+    }
+
   };
 
    const addContact = (contact) => {
-    setContacts((prev) => ({...prev, contact}));
+    setContacts((prev) => ([...prev, contact]));
   };
 const  onBtnSubmit = (e) => {
     e.preventDefault();
     const newContact = {
-      name: setName(name),
+     name,
       id: nanoid(),
-      number: setNumber(number),
+      number,
     };
     const dublicate = contacts.some((el) => el.name.toLowerCase() === name.toLowerCase());
     if (!dublicate) {
