@@ -6,9 +6,9 @@ import ContactsListItem from "./Components/ContactsListItem/ContactsListItem";
 import FilterItems from "./Components/FilterItems/FilterItems";
 const  App = () => {
   const [contacts,setContacts] = useState( ()=> {
-    contacts = JSON.parse(localStorage.getItem('contacts'))
+ const  localStorageData = JSON.parse(localStorage.getItem('contacts'))
   if(localStorageData){
-    setContacts({contacts: localStorageData})
+  return localStorageData
   }})
 
   const [name,setName] = useState('')
@@ -42,7 +42,7 @@ const  App = () => {
 //   }
 // }
 
-  const filter = (query) => {
+  const filterItems = (query) => {
     return contacts.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()) && item);
   };
   const removeName = (name) =>
@@ -56,17 +56,16 @@ const  App = () => {
   };
 
    const addContact = (contact) => {
-    this.setState((prev) => ({ contacts: [...prev.contacts, contact] }));
+    setContacts((prev) => ({...prev, contact}));
   };
-  onBtnSubmit = (e) => {
+const  onBtnSubmit = (e) => {
     e.preventDefault();
     const newContact = {
-      ...this.state,
       name: setName(name),
       id: nanoid(),
       number: setNumber(number),
     };
-    const dublicate = contacts.some((el) => el.name.toLowerCase() === this.state.name.toLowerCase());
+    const dublicate = contacts.some((el) => el.name.toLowerCase() === name.toLowerCase());
     if (!dublicate) {
       return addContact(newContact);
     } else {
@@ -76,11 +75,11 @@ const  App = () => {
     return (
       <>
         <h1>PhoneBook</h1>
-        <Form onInputValue={onInputValue} onTelValue={onTelValue} onBtnSubmit={onBtnSubmit} />
+        <Form onInputValue={onInputValue} onBtnSubmit={onBtnSubmit} />
         <h2>Contacts</h2>
         <FilterItems filter={filter} onInputValue={onInputValue} />
         <ul>
-          <ContactsListItem filter={filter(filter)} removeName={removeName} />
+          <ContactsListItem filter={filterItems(filter)} removeName={removeName} />
         </ul>
       </>
     );
